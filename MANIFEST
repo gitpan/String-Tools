@@ -4,6 +4,6 @@ MANIFEST
 META.yml
 Makefile.PL
 README
-README.md
 dist.ini
 lib/String/Tools.pm
+t/00-basic.t

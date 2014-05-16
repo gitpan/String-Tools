@@ -24,16 +24,19 @@ my %WriteMakefileArgs = (
     "Exporter" => 0,
     "warnings" => 0
   },
-  "TEST_REQUIRES" => {},
-  "VERSION" => "0.14.132",
+  "TEST_REQUIRES" => {
+    "Test::More" => 0
+  },
+  "VERSION" => "0.14.136",
   "test" => {
-    "TESTS" => ""
+    "TESTS" => "t/*.t"
   }
 );
 
 
 my %FallbackPrereqs = (
   "Exporter" => 0,
+  "Test::More" => 0,
   "warnings" => 0
 );
 

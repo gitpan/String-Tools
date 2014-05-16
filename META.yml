@@ -2,7 +2,8 @@
 abstract: 'Various tools for handling strings.'
 author:
   - 'Bob Kleemann <bobk@cpan.org>'
-build_requires: {}
+build_requires:
+  Test::More: '0'
 configure_requires:
   ExtUtils::MakeMaker: '6.30'
 dynamic_config: 0
@@ -16,4 +17,4 @@ requires:
   Exporter: '0'
   perl: v5.12.0
   warnings: '0'
-version: 0.14.132
+version: 0.14.136
