@@ -1,6 +1,6 @@
 #! /usr/bin/env perl
 
-use Test::More ;#tests => 0;
+use Test::More tests => 29;
 
 ok require String::Tools, 'Require String::Tools';
 
@@ -58,4 +58,3 @@ is trim('  stretched  string ',     '', qr/ /), '  stretched  string',
 is trim('  stretched  string ', qr/ /, qr/ +/), ' stretched  string',
     'trim both';
 
-done_testing;
