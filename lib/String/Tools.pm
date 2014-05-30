@@ -3,7 +3,7 @@ use v5.12;
 use warnings;
 
 package String::Tools;
-$String::Tools::VERSION = '0.14.143';
+$String::Tools::VERSION = '0.14.150';
 
 use Exporter 'import';
 
@@ -111,7 +111,7 @@ String::Tools - Various tools for handling strings.
 
 =head1 VERSION
 
-version 0.14.143
+version 0.14.150
 
 =head1 SYNOPSIS
 
@@ -173,15 +173,19 @@ C<String::Tools> is a collection of tools to manipulate strings.
 
 The default thread to use while stitching a string together.
 Defaults to a single space, C<' '>.
-Used in L</shrink( $string )> and L</stitch( @list )>.
+Used in L</shrink( $string = $_ )> and L</stitch( @list )>.
 
 =item C<$BLANK>
 
 The default regular expression character class to determine if a string
 component is blank.
 Defaults to C<[[:cntrl:][:space:]]>.
-Used in L</is_blank( $string )>, L</shrink( $string )>, L</stitch( @list )>,
-and L</trim( $string, qr/l/, qr/r/ )>.
+Used in
+L</is_blank( $string = $_ )>,
+L</shrink( $string = $_ )>,
+L</stitch( @list )>,
+and
+L</trim( $string, qrE<sol>lE<sol> = qrE<sol>$BLANK+E<sol>, qrE<sol>rE<sol> = $l )>.
 
 =back
 
@@ -211,7 +215,7 @@ C<$string> defaults to C<$_> if not specified.
 =item C<stitch( @list )>
 
 Stitch together the elements of list with L</$THREAD>.
-If an item in C<@list> is blank (as measured by L</is_blank( $string )>),
+If an item in C<@list> is blank (as measured by L</is_blank( $string = $_ )>),
 then the item is stitched without L</$THREAD>.
 
 This approach is more intuitive than C<join>:
@@ -244,7 +248,7 @@ Take in C<$string>, and do a search and replace of all the variables named in
 C<%variables> with the associated values.
 
 The C<%variables> parameter can be a hash, hash reference, array reference,
-list, scalar, or empty.  The single scalar is treated as if the name is the 
+list, scalar, or empty.  The single scalar is treated as if the name is the
 underscore.  The empty case is handled by using underscore as the name,
 and C<$_> as the value.
 
