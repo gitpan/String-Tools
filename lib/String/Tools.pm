@@ -3,17 +3,24 @@ use v5.12;
 use warnings;
 
 package String::Tools;
-$String::Tools::VERSION = '0.14.150';
+# ABSTRACT: Various tools for handling strings.
+our $VERSION = '0.14.163'; # VERSION
+
 
 use Exporter 'import';
 
 our @EXPORT    = qw();
 our @EXPORT_OK = qw(define is_blank shrink stitch stitcher subst trim);
 
+
 our $THREAD = ' ';
+
+
 our $BLANK  = '[[:cntrl:][:space:]]';
 
+
 sub define(_) { return $_[0] // '' }
+
 
 sub is_blank(_) {
     local $_ = shift;
@@ -21,11 +28,13 @@ sub is_blank(_) {
     return /\A$BLANK+\z/;
 }
 
+
 sub shrink(_) {
     local $_ = trim(shift);
     s/$BLANK+/$THREAD/g if defined;
     return $_;
 }
+
 
 sub stitch {
     local $_;
@@ -42,10 +51,12 @@ sub stitch {
     return $str;
 }
 
+
 sub stitcher {
     local $THREAD = shift // $THREAD;
     return &stitch;
 }
+
 
 sub subst {
     my $str  = shift;
@@ -68,6 +79,7 @@ sub subst {
 
     return $str;
 }
+
 
 sub trim {
     local $_ = @_ ? shift : $_;
@@ -103,7 +115,11 @@ sub trim {
 
 1;
 
-__DATA__
+__END__
+
+=pod
+
+=encoding UTF-8
 
 =head1 NAME
 
@@ -111,7 +127,7 @@ String::Tools - Various tools for handling strings.
 
 =head1 VERSION
 
-version 0.14.150
+version 0.14.163
 
 =head1 SYNOPSIS
 
@@ -165,17 +181,15 @@ version 0.14.150
 
 C<String::Tools> is a collection of tools to manipulate strings.
 
-=head2 Variables
+=head1 VARIABLES
 
-=over
-
-=item C<$THREAD>
+=head2 C<$THREAD>
 
 The default thread to use while stitching a string together.
 Defaults to a single space, C<' '>.
 Used in L</shrink( $string = $_ )> and L</stitch( @list )>.
 
-=item C<$BLANK>
+=head2 C<$BLANK>
 
 The default regular expression character class to determine if a string
 component is blank.
@@ -185,34 +199,31 @@ L</is_blank( $string = $_ )>,
 L</shrink( $string = $_ )>,
 L</stitch( @list )>,
 and
-L</trim( $string, qrE<sol>lE<sol> = qrE<sol>$BLANK+E<sol>, qrE<sol>rE<sol> = $l )>.
+L</trim( $string = $_ ; $l = qrE<sol>$BLANK+E<sol> ; $r = $l )>.
 
-=back
+=head1 FUNCTIONS
 
-=head2 Functions
-
-=over
-
-=item C<define( $scalar = $_ )>
+=head2 C<define( $scalar = $_ )>
 
 Returns C<$scalar> if it is defined, or the empty string if it's undefined.
 Useful in avoiding the 'Use of uninitialized value' warnings.
 C<$scalar> defaults to C<$_> if not specified.
 
-=item C<is_blank( $string = $_ )>
+=head2 C<is_blank( $string = $_ )>
 
 Return true if C<$string> is blank.
 A blank C<$string> is undefined, the empty string,
 or a string that conisists entirely of L</$BLANK> characters.
 C<$string> defaults to C<$_> if not specified.
 
-=item C<shrink( $string = $_ )>
+=head2 C<shrink( $string = $_ )>
 
-Combine multiple consecutive C<$BLANK> characters into one
+Trim C<$BLANK> characters from that lead and rear of C<$string>,
+then combine multiple consecutive C<$BLANK> characters into one
 C<$THREAD> character throughout C<$string>.
 C<$string> defaults to C<$_> if not specified.
 
-=item C<stitch( @list )>
+=head2 C<stitch( @list )>
 
 Stitch together the elements of list with L</$THREAD>.
 If an item in C<@list> is blank (as measured by L</is_blank( $string = $_ )>),
@@ -226,7 +237,7 @@ This approach is more intuitive than C<join>:
  say   join( ' ' => qw( Can anybody hear? ) );
  # "1 2 3 ...\nCan anybody hear?"
  #
- say stitch( ' ' => qw( 1 2 3 ... ), "\n", qw( Can anybody hear? ) );
+ say stitch( qw( 1 2 3 ... ), "\n", qw( Can anybody hear? ) );
  # "1 2 3 ...\nCan anybody hear?"
 
  say   join( ' ' => $user, qw( home dir is /home/ ),     $user );
@@ -234,15 +245,21 @@ This approach is more intuitive than C<join>:
  say   join( ' ' => $user, qw( home dir is /home/ ) ) .  $user;
  # "$user home dir is /home/$user"
  #
- say stitch( ' ' => $user, qw( home dir is /home/ ), '', $user );
+ say stitch( $user, qw( home dir is /home/ ), '', $user );
  # "$user home dir is /home/$user"
 
-=item C<< stitcher( $thread => @list ) >>
+=head2 C<< stitcher( $thread => @list ) >>
 
-Stitch together the elements of list with C<$thread> in place of
+Stitch together the elements of C<@list> with C<$thread> in place of
 L</$THREAD>.
 
-=item C<< subst( $string, %variables = ( _ => $_ ) ) >>
+ say stitcher( ' ' => qw( 1 2 3 ... ), "\n", qw( Can anybody hear? ) );
+ # "1 2 3 ...\nCan anybody hear?"
+
+ say stitcher( ' ' => $user, qw( home dir is /home/ ), '', $user );
+ # "$user home dir is /home/$user"
+
+=head2 C<< subst( $string ; %variables = ( _ => $_ ) ) >>
 
 Take in C<$string>, and do a search and replace of all the variables named in
 C<%variables> with the associated values.
@@ -262,7 +279,7 @@ are simply ignored and left as is.
 
 Returns the string with substitutions made.
 
-=item C<trim( $string, qr/l/ = qr/$BLANK+/, qr/r/ = $l )>
+=head2 C<trim( $string = $_ ; $l = qr/$BLANK+/ ; $r = $l )>
 
 Trim C<string> of leading and trailing characters.
 C<$string> defaults to C<$_> if not specified.
@@ -287,20 +304,34 @@ corresponding parameter to the empty string C<''>.
  say trim('  This is a test!!', r => qr/[.?!]+/, l => qr/\s+/);
  # 'This is a test'
 
-=back
-
 =head1 BUGS
 
-None known.
+Please report any bugs or feature requests on the bugtracker website
+https://github.com/rkleemann/String-Tools/issues or by email to
+bug-String-Tools@rt.cpan.org.
+
+When submitting a bug or request, please include a test-file or a
+patch to an existing test-file that illustrates the bug or desired
+feature.
 
 =head1 TODO
 
 Nothing?
 
-=head1 AUTHOR
-
-Bob Kleemann
-
 =head1 SEE ALSO
 
 L<perlfunc/join>, Any templating system.
+
+=head1 AUTHOR
+
+Bob Kleemann <bobk@cpan.org>
+
+=head1 COPYRIGHT AND LICENSE
+
+This software is Copyright (c) 2014 by Bob Kleemann.
+
+This is free software, licensed under:
+
+  The Artistic License 2.0 (GPL Compatible)
+
+=cut

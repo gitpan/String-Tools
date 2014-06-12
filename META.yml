@@ -17,4 +17,7 @@ requires:
   Exporter: '0'
   perl: v5.12.0
   warnings: '0'
-version: 0.14.150
+resources:
+  bugtracker: https://github.com/rkleemann/String-Tools/issues
+  repository: git://github.com/rkleemann/String-Tools.git
+version: 0.14.163
